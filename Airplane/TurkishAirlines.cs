@@ -69,7 +69,7 @@ namespace BiletAlmak.Airplane
                 u.SetTicketFee();
 
             }
-            Print.WriteLine($"Kişisel Bilet Fiyat {u.TicketFeePerPerson:C2}", ConsoleColor.DarkBlue);
+            Print.WriteLine($"Kişisel Bilet Fiyat: {u.TicketFeePerPerson:C2}", ConsoleColor.DarkBlue);
         }
 
     }

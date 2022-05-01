@@ -11,7 +11,25 @@ namespace BiletAlmak
     internal class Ulasim
     {
         public DateTime Date { get; set; }
-        public string Destination { get; set; }
+
+        private string _destination;
+        public string Destination
+        {
+            get { return _destination; }
+            set
+            {
+                if (value.ToLower().Contains("adana"))
+                    _destination = "Adana";
+                else if (value.ToLower().Contains("ankara"))
+                    _destination = "Ankara";
+                else if (value.ToLower().Contains("antalya"))
+                    _destination = "Antalya";
+                else if (value.ToLower().Contains("mersin"))
+                    _destination = "Mersin";
+                else
+                    _destination = string.Empty;
+            }
+        }
 
         private string _transportationModel;
         public string TransportationModel
@@ -19,8 +37,8 @@ namespace BiletAlmak
             get { return _transportationModel; }
             set
             {
-                _transportationModel = int.TryParse(value, out int num) ?
-                    value : throw new InvalidCastException("Sadece Sayı Olmalıdır!");
+                    _transportationModel = int.TryParse(value, out int num) ?
+                        value : throw new InvalidCastException("Sadece Sayı Olmalıdır!");
             }
         }
 
@@ -38,9 +56,9 @@ namespace BiletAlmak
                             Print.WriteLine("30'dan fazla sandaliye rezervasyonu yapılamaz!", ConsoleColor.Red);
                             Environment.Exit(0);
                         }
-                        else if (value == 0)
+                        else if (value <= 0)
                         {
-                            Print.WriteLine("Sıfır girilmaz!", ConsoleColor.Red);
+                            Print.WriteLine("Sıfır veya olumsuz numara  girilmaz!", ConsoleColor.Red);
                             Environment.Exit(-1);
                         }
                         else
@@ -49,14 +67,24 @@ namespace BiletAlmak
                         }
                         break;
                     case "2":
-                        if (value > 230)
+                        if (value > 230 && SeatPosition == 'c')
                         {
                             Print.WriteLine("30'dan fazla sandaliye rezervasyonu yapılamaz!", ConsoleColor.Red);
                             Environment.Exit(0);
                         }
-                        else if (value == 0)
+                        else if (value > 180 && SeatPosition == 'b')
                         {
-                            Print.WriteLine("Sıfır girilmaz!", ConsoleColor.Red);
+                            Print.WriteLine("30'dan fazla sandaliye rezervasyonu yapılamaz!", ConsoleColor.Red);
+                            Environment.Exit(0);
+                        }
+                        else if (value > 130 && SeatPosition == 'a')
+                        {
+                            Print.WriteLine("30'dan fazla sandaliye rezervasyonu yapılamaz!", ConsoleColor.Red);
+                            Environment.Exit(0);
+                        }
+                        else if (value <= 0)
+                        {
+                            Print.WriteLine("Sıfır veya olumsuz numara  girilmaz!", ConsoleColor.Red);
                             Environment.Exit(-1);
                         }
                         else
@@ -67,7 +95,7 @@ namespace BiletAlmak
                     default:
                         break;
                 }
-                
+
             }
         }
         public double TicketFeePerPerson { get; set; }
@@ -202,20 +230,29 @@ namespace BiletAlmak
         /// </summary>
         public void Run()
         {
-            Console.Write("GİDİLECEK YER: ");
-            this.Destination = Console.ReadLine().ToLower();
+            Console.Write("GİDİLECEK YER (Adana/Ankara/Antalya/Mersin): ");
+            this.Destination = Console.ReadLine();
+            if (string.IsNullOrEmpty(this.Destination))
+            {
+                Print.WriteLine("yanlış şehir adı veya şehirler listemizde mevcut değil!", ConsoleColor.Red);
+                Environment.Exit(-1);
+            }
 
             Console.Write("ULAŞIM YOLU SEÇİNİZ\n\t1. OTOBÜS\n\t2. UÇAK\n(1/2): ");
             this.TransportationModel = Console.ReadLine();
 
-            Console.WriteLine("FİRMA SEÇİNİZ: ");
             if (this.TransportationModel == "1")
             {
                 this.SetBusCompanies();
             }
-            else
+            else if(this.TransportationModel == "2")
             {
                 this.SetPlaneCompanies();
+            }
+            else
+            {
+                Print.WriteLine("Yanliş Numara!", ConsoleColor.Red);
+                Environment.Exit(-1);
             }
 
             switch (this.TransportationModel)
@@ -224,25 +261,25 @@ namespace BiletAlmak
                     {
                         switch (this.Destination)
                         {
-                            case "ankara":
+                            case "Ankara":
                                 if (this.Company == "MetroTurizm")
                                     _ = new MetroTurizm(this);
                                 else if (this.Company == "AliOsmanUlusoy")
                                     _ = new AliOsmanUlusoy(this);
                                 break;
-                            case "antalya":
+                            case "Antalya":
                                 if (this.Company == "MetroTurizm")
                                     _ = new MetroTurizm(this);
                                 else if (this.Company == "AliOsmanUlusoy")
                                     _ = new AliOsmanUlusoy(this);
                                 break;
-                            case "adana":
+                            case "Adana":
                                 if (this.Company == "MetroTurizm")
                                     _ = new MetroTurizm(this);
                                 else if (this.Company == "AliOsmanUlusoy")
                                     _ = new AliOsmanUlusoy(this);
                                 break;
-                            case "mersin":
+                            case "Mersin":
                                 if (this.Company == "MetroTurizm")
                                     _ = new MetroTurizm(this);
                                 else if (this.Company == "AliOsmanUlusoy")
@@ -256,7 +293,7 @@ namespace BiletAlmak
                 case "2":   // Uçak
                     switch (this.Destination)
                     {
-                        case "ankara":
+                        case "Ankara":
                             if (this.Company == "TurkishAirlines")
                                 _ = new TurkishAirlines(this);
                             else if (this.Company == "AnadoluJet")
@@ -266,7 +303,7 @@ namespace BiletAlmak
                             else if (this.Company == "OnurAir")
                                 _ = new OnurAir(this);
                             break;
-                        case "antalya":
+                        case "Antalya":
                             if (this.Company == "TurkishAirlines")
                                 _ = new TurkishAirlines(this);
                             else if (this.Company == "AnadoluJet")
@@ -276,7 +313,7 @@ namespace BiletAlmak
                             else if (this.Company == "OnurAir")
                                 _ = new OnurAir(this);
                             break;
-                        case "adana":
+                        case "Adana":
                             if (this.Company == "TurkishAirlines")
                                 _ = new TurkishAirlines(this);
                             else if (this.Company == "AnadoluJet")
@@ -286,7 +323,7 @@ namespace BiletAlmak
                             else if (this.Company == "OnurAir")
                                 _ = new OnurAir(this);
                             break;
-                        case "mersin":
+                        case "Mersin":
                             if (this.Company == "TurkishAirlines")
                                 _ = new TurkishAirlines(this);
                             else if (this.Company == "AnadoluJet")
@@ -306,6 +343,7 @@ namespace BiletAlmak
 
         private void SetPlaneCompanies()
         {
+            Console.WriteLine("FİRMA SEÇİNİZ: ");
             string[] planeCompanies = { "Turkish Airlines", "Pegasus", "AnadoluJet", "OnurAir" };
             foreach (var item in planeCompanies)
             {
@@ -318,10 +356,16 @@ namespace BiletAlmak
                 Print.WriteLine("Hata!", ConsoleColor.Red);
                 Environment.Exit(-1);
             }
+            else if (this.Company == "Bilinmeyen Firma!")
+            {
+                Print.WriteLine("Firmayi Bulamadik!", ConsoleColor.Red);
+                Environment.Exit(-1);
+            }
         }
 
         private void SetBusCompanies()
         {
+            Console.WriteLine("FİRMA SEÇİNİZ: ");
             string[] busCompanies = { "Ali Osman Ulusoy", "Metro Turizm" };
             foreach (var item in busCompanies)
             {
@@ -334,6 +378,12 @@ namespace BiletAlmak
                 Print.WriteLine("Hata!", ConsoleColor.Red);
                 Environment.Exit(-1);
             }
+            else if(this.Company == "Bilinmeyen Firma!")
+            {
+                Print.WriteLine("Firmayi Bulamadik!", ConsoleColor.Red);
+                Environment.Exit(-1);
+            }
+
         }
 
         internal void SetSeatPosition()
@@ -451,18 +501,18 @@ namespace BiletAlmak
         {
             switch (this.Destination)
             {
-                case "ankara":
+                case "Ankara":
                     if (this.TransportationModel == "1")    // Otobüs
                     {
                         switch (this.Company)
                         {
                             case "AliOsmanUlusoy":
-                                if(this.SeatPosition == 'b')
+                                if (this.SeatPosition == 'b')
                                 {
                                     this.NumberOfSeats -= 7;
                                     this.TicketFeePerPerson = 53.0d;
                                 }
-                                else if(this.SeatPosition == 'c')
+                                else if (this.SeatPosition == 'c')
                                 {
                                     this.NumberOfSeats -= 15;
                                     this.TicketFeePerPerson = 50.0d;
@@ -507,6 +557,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 401.0d;
                                 }
                                 break;
@@ -523,6 +574,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 380.0d;
                                 }
                                 break;
@@ -539,6 +591,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 350.0d;
                                 }
                                 break;
@@ -555,13 +608,14 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 365.0d;
                                 }
                                 break;
                         }
                     }
                     break;
-                case "antalya":
+                case "Antalya":
                     if (this.TransportationModel == "1")    // Otobüs
                     {
                         switch (this.Company)
@@ -617,6 +671,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 550.0d;
                                 }
                                 break;
@@ -633,6 +688,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 520.0d;
                                 }
                                 break;
@@ -649,6 +705,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 490.0d;
                                 }
                                 break;
@@ -665,13 +722,14 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 500.0d;
                                 }
                                 break;
                         }
                     }
                     break;
-                case "adana":
+                case "Adana":
                     if (this.TransportationModel == "1")    // Otobüs
                     {
                         switch (this.Company)
@@ -727,6 +785,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 650.0d;
                                 }
                                 break;
@@ -743,6 +802,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 620.0d;
                                 }
                                 break;
@@ -759,6 +819,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 590.0d;
                                 }
                                 break;
@@ -775,13 +836,14 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 600.0d;
                                 }
                                 break;
                         }
                     }
                     break;
-                case "mersin":
+                case "Mersin":
                     if (this.TransportationModel == "1")    // Otobüs
                     {
                         switch (this.Company)
@@ -837,6 +899,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 645.0d;
                                 }
                                 break;
@@ -853,6 +916,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 615.0d;
                                 }
                                 break;
@@ -869,6 +933,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 585.0d;
                                 }
                                 break;
@@ -885,6 +950,7 @@ namespace BiletAlmak
                                 }
                                 else
                                 {
+                                    this.NumberOfSeats -= 100;
                                     this.TicketFeePerPerson = 595.0d;
                                 }
                                 break;
