@@ -98,6 +98,7 @@ namespace BiletAlmak
 
             }
         }
+
         public double TicketFeePerPerson { get; set; }
 
         public double SumTicketFee { get; set; }
@@ -341,6 +342,9 @@ namespace BiletAlmak
             this.Reservation();
         }
 
+        /// <summary>
+        /// farklı uçak şirketlere karar verme için.
+        /// </summary>
         private void SetPlaneCompanies()
         {
             Console.WriteLine("FİRMA SEÇİNİZ: ");
@@ -363,6 +367,9 @@ namespace BiletAlmak
             }
         }
 
+        /// <summary>
+        /// farklı otobüs şirketlere karar vermek
+        /// </summary>
         private void SetBusCompanies()
         {
             Console.WriteLine("FİRMA SEÇİNİZ: ");
@@ -386,6 +393,9 @@ namespace BiletAlmak
 
         }
 
+        /// <summary>
+        /// koltuk pozisyonu seçme için.
+        /// </summary>
         internal void SetSeatPosition()
         {
             Console.WriteLine("KOLTUK SEÇİMİ:");
@@ -405,7 +415,7 @@ namespace BiletAlmak
         }
 
         /// <summary>
-        /// 
+        /// koltuk numarası ayarlama için.
         /// </summary>
         /// <returns>int Listesi</returns>
         internal List<int> SetSeatNumber()
@@ -477,7 +487,7 @@ namespace BiletAlmak
         }
 
         /// <summary>
-        /// 
+        /// kişi sayisi ayarlama için.
         /// </summary>
         internal void SetNumberOfPeople()
         {
@@ -495,7 +505,7 @@ namespace BiletAlmak
         }
 
         /// <summary>
-        /// 
+        /// bilet fiyatı
         /// </summary>
         internal void SetTicketFee()
         {
@@ -962,7 +972,7 @@ namespace BiletAlmak
         }
 
         /// <summary>
-        /// 
+        /// en son, rezervasyonu gösterme için.
         /// </summary>
         internal void Reservation()
         {

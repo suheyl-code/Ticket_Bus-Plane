@@ -21,7 +21,7 @@ namespace BiletAlmak.Airplane
         }
 
         /// <summary>
-        /// 
+        /// bazı ana sorulardan sonra program akışı buradan itibarendir. ama yine de temel sınıftan yöntemleri çağırıyor.
         /// </summary>
         /// <param name="u"></param>
         private static void RestProgram(Ulasim u)
