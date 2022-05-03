@@ -10,6 +10,8 @@ namespace BiletAlmak
 {
     internal class Ulasim
     {
+        private byte selectDay;
+
         public DateTime Date { get; set; }
 
         private string _destination;
@@ -231,7 +233,7 @@ namespace BiletAlmak
         /// </summary>
         public void Run()
         {
-            Console.Write("GİDİLECEK YER (Adana/Ankara/Antalya/Mersin): ");
+            Console.Write("GİDİLECEK YER (Adana / Ankara / Antalya / Mersin): ");
             this.Destination = Console.ReadLine();
             if (string.IsNullOrEmpty(this.Destination))
             {
@@ -256,6 +258,8 @@ namespace BiletAlmak
                 Environment.Exit(-1);
             }
 
+            Console.Clear();
+            Print.WriteLine("\t\t<"+Date.ToString()+">", ConsoleColor.Blue);
             switch (this.TransportationModel)
             {
                 case "1":   // Otobüs
@@ -972,17 +976,73 @@ namespace BiletAlmak
         }
 
         /// <summary>
+        /// rezervasyon için rastgele tarih ayarlama.
+        /// </summary>
+        private void SetRandomDate()
+        {
+            Random rnd = new Random();
+            //byte selectDay = default;
+            int todayDate = Date.Day;
+            DateTime DateToGo = default;
+            int[] randomDays = new int[rnd.Next(1,5)];
+            
+            if(todayDate < 26)
+            {
+                for (int i = 0; i < randomDays.Length; i++)
+			    {
+                    randomDays[i] = rnd.Next(todayDate,todayDate+5);
+			    }
+            }
+            else
+            {
+                for (int i = 0; i < randomDays.Length; i++)
+			    {
+                    randomDays[i] = rnd.Next(todayDate,todayDate+4);
+			    }
+            }
+	        
+            foreach (var item in randomDays)
+	        {
+                Print.Write($"{item} ", ConsoleColor.Green);
+	        }
+            Console.Write("GÜN SEÇİN: ");
+            try 
+	        {	        
+		        selectDay =  Convert.ToByte(Console.ReadLine());
+                
+	        }
+	        catch (Exception e)
+	        {
+                Print.WriteLine(e.Message, ConsoleColor.Red);
+	        }
+
+            Console.WriteLine();
+            if(randomDays.Any(x => x == selectDay))
+            {
+                DateToGo = Date.AddDays(selectDay-todayDate);
+                Print.WriteLine($"*** {DateToGo.DayOfWeek} {selectDay}.{Date.Month}.{Date.Year} Seçildi.", ConsoleColor.Cyan);
+            }
+            else
+            {
+                Console.WriteLine("Seçtiğin Günde Boş Yer bulamadik.");
+                Environment.Exit(0);
+            }
+        }
+
+        /// <summary>
         /// en son, rezervasyonu gösterme için.
         /// </summary>
         internal void Reservation()
         {
+            SetRandomDate();
             foreach (var item in SeatNumber)
             {
-                Print.WriteLine($"Sandaliye No: {item} Rezerve oldu.", ConsoleColor.Cyan);
+                Print.WriteLine($"*** Sandaliye No: {item} Rezerve oldu.", ConsoleColor.Cyan);
 
             }
             Print.WriteLine($"*** Toplam Fiyat: {this.SumTicketFee:C2} ***", ConsoleColor.Cyan);
-            Print.WriteLine($"Odeme için < {Date.AddDays(3)} > zamanınız var.", ConsoleColor.Magenta);
+            DateTime reserveDueDate = Date.AddDays(selectDay-(Date.Day) -1);
+            Print.WriteLine($"Odeme için < {reserveDueDate} >e kadar zamanınız var.", ConsoleColor.Magenta);
         }
     }
 }
