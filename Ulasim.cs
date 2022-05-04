@@ -981,7 +981,6 @@ namespace BiletAlmak
         private void SetRandomDate()
         {
             Random rnd = new Random();
-            //byte selectDay = default;
             int todayDate = Date.Day;
             DateTime DateToGo = default;
             int[] randomDays = new int[rnd.Next(1,5)];
@@ -1003,7 +1002,7 @@ namespace BiletAlmak
 	        
             foreach (var item in randomDays)
 	        {
-                Print.Write($"{item} ", ConsoleColor.Green);
+                Print.Write($"{item}/{Date.Month}  ", ConsoleColor.Green);
 	        }
             Console.Write("GÜN SEÇİN: ");
             try 
@@ -1035,6 +1034,7 @@ namespace BiletAlmak
         internal void Reservation()
         {
             SetRandomDate();
+
             foreach (var item in SeatNumber)
             {
                 Print.WriteLine($"*** Sandaliye No: {item} Rezerve oldu.", ConsoleColor.Cyan);
